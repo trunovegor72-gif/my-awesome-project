@@ -5,43 +5,34 @@ const form = document.getElementById('contactForm');
 let lastActive = null; 
 openBtn.addEventListener('click', () => { 
 lastActive = document.activeElement; 
-dlg.showModal();                               // модальный режим + затемнение 
+dlg.showModal();                               
 dlg.querySelector('input,select,textarea,button')?.focus(); 
 }); 
-closeBtn.addEventListener('click', () => dlg.close('cancel')); 
+closeBtn.addEventListener('click', () => dlg.close('cancel'));
+// очистка сообщений об ошиьке 
 form?.addEventListener('submit', (e) => { 
-// валидация см. 1.4.2; при успехе закрываем окно 
-}); 
-dlg.addEventListener('close', () => { lastActive?.focus(); }); 
-// Esc по умолчанию вызывает событие 'cancel' и закрывает <dialog
-form?.addEventListener('submit', (e) => { 
-// 1) Сброс кастомных сообщений 
-[...form.elements].forEach(el => el.setCustomValidity?.('')); 
-// 2) Проверка встроенных ограничений 
+[...form.elements].forEach(el => el.setCustomValidity?.(''));  
+//сброс стандартного поведения в браузере
 if (!form.checkValidity()) { 
-e.preventDefault(); 
-// Пример: таргетированное сообщение 
+e.preventDefault();  
+//текст для ошибок
 const email = form.elements.email; 
 if (email?.validity.typeMismatch) { 
 email.setCustomValidity('Введите корректный e-mail, например name@example.com'); 
 } 
-const phone = form.elements.phone;
-if (phone?.validity.willValidate)
-{
-phone.setCustomValidity('не')
-}
-form.reportValidity(); // показать браузерные подсказки 
-// A11y: подсветка проблемных полей 
+const phone = form.elements.phone; 
+if (phone?.validity.patternMismatch) { 
+phone.setCustomValidity('Другой формат'); 
+} 
+form.reportValidity(); 
 [...form.elements].forEach(el => { 
 if (el.willValidate) el.toggleAttribute('aria-invalid', 
 !el.checkValidity()); 
 }); 
 return; 
 } 
-// 3) Успешная «отправка» (без сервера) 
 e.preventDefault(); 
-
-// Если форма внутри <dialog>, закрываем окно: 
 document.getElementById('contactDialog')?.close('success'); 
 form.reset(); 
-});
+}); 
+dlg.addEventListener('close', () => { lastActive?.focus(); }); 
