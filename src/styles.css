@@ -26,6 +26,9 @@ dialog {
 border: 3px solid #b300ff; 
 border-radius: 8px;   
 }
+option {
+    background-color: #ca67ff;
+}
 /* Кнопка по умолчанию */ 
 button, [type="submit"] { 
 background: red; 
